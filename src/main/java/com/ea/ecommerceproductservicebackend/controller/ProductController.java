@@ -21,7 +21,7 @@ public class ProductController {
     @Autowired
     private RestTemplate restTemplate;
 
-    private String reviewUrl="http://review-service:8089/rest/review/getReviewByProduct";
+    private String reviewUrl="http://review-service:8089/rest/review/";
 
     @GetMapping("/")
     public List<Product> getAllProduct(){
@@ -50,7 +50,7 @@ public class ProductController {
     }
     @GetMapping("/reviews/{id}")
     public List<Review> getReviews(@PathVariable Long id) {
-        ResponseEntity<List<Review>> response = restTemplate.exchange(reviewUrl+"/"+id,
+        ResponseEntity<List<Review>> response = restTemplate.exchange(reviewUrl+"getReviewByProduct/"+id,
                 HttpMethod.GET,null,new ParameterizedTypeReference<List<Review>>(){});
         List<Review> productReview = response.getBody();
         return productReview;
