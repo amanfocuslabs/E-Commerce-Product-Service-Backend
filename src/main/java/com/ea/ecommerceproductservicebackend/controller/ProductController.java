@@ -1,10 +1,16 @@
 package com.ea.ecommerceproductservicebackend.controller;
 
 import com.ea.ecommerceproductservicebackend.model.Product;
+import com.ea.ecommerceproductservicebackend.model.Review;
 import com.ea.ecommerceproductservicebackend.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -12,6 +18,10 @@ import java.util.List;
 public class ProductController {
     @Autowired
     public ProductService productService;
+    @Autowired
+    private RestTemplate restTemplate;
+
+    private String reviewUrl="http://review-service:8089/rest/review/getReviewByProduct";
 
     @GetMapping("/")
     public List<Product> getAllProduct(){
@@ -37,5 +47,12 @@ public class ProductController {
     public Boolean delete(@PathVariable long id) {
         productService.delete(id);
         return true;
+    }
+    @GetMapping("/reviews/{id}")
+    public List<Review> getReviews(@PathVariable Long id) {
+        ResponseEntity<List<Review>> response = restTemplate.exchange(reviewUrl+"/"+id,
+                HttpMethod.GET,null,new ParameterizedTypeReference<List<Review>>(){});
+        List<Review> productReview = response.getBody();
+        return productReview;
     }
 }
